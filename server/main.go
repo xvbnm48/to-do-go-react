@@ -41,6 +41,23 @@ func main() {
 
 	})
 
+	app.Delete("/api/todos/:id", func(c *fiber.Ctx) error {
+		id, err := c.ParamsInt("id")
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).SendString("Invalid ID")
+		}
+
+		for i, t := range todos {
+			if t.ID == id {
+				todos = append(todos[:i], todos[i+1:]...)
+				break
+			}
+		}
+
+		return c.JSON(todos)
+
+	})
+
 	app.Patch("/api/todos/:id/done", func(c *fiber.Ctx) error {
 		id, err := c.ParamsInt("id")
 		if err != nil {
